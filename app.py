@@ -235,51 +235,48 @@ with tab1:
     with col_input:
         st.markdown("#### 🛒 Ceritain Soal Usahamu")
         
-        with st.form("form_compliance"):
-            nama_usaha = st.text_input("Nama Usaha Kulinermu:", value="Kedai Kopi Senja ☕")
-            bentuk_usaha = st.selectbox("Kamu Mendaftar Sebagai:", ["Orang Pribadi (Perorangan) 🙋‍♂️", "Badan Usaha (CV/PT) 🏢"])
-            
-            # Kategorisasi yang lebih luas mencakup Makanan & Minuman
-            model_usaha = st.selectbox("Jenis Bisnismu:", [
-                "Warung Makan / Resto / Cafe 🥘", 
-                "Kedai Minuman / Kopi / Jus / Boba 🧋", 
-                "Jasa Boga / Katering 🍱", 
-                "Produksi Makanan/Camilan Kemasan 🍪",
-                "Produksi Minuman Botol/Kemasan 🧃"
-            ])
-            
-            # Deteksi Tipe Bisnis (Makanan vs Minuman)
-            is_minuman = "Minuman" in model_usaha or "Kopi" in model_usaha or "Jus" in model_usaha
+        nama_usaha = st.text_input("Nama Usaha Kulinermu:", value="Kedai Kopi Senja ☕")
+        bentuk_usaha = st.selectbox("Kamu Mendaftar Sebagai:", ["Orang Pribadi (Perorangan) 🙋‍♂️", "Badan Usaha (CV/PT) 🏢"])
+        
+        # Kategorisasi yang lebih luas mencakup Makanan & Minuman
+        model_usaha = st.selectbox("Jenis Bisnismu:", [
+            "Warung Makan / Resto / Cafe 🥘", 
+            "Kedai Minuman / Kopi / Jus / Boba 🧋", 
+            "Jasa Boga / Katering 🍱", 
+            "Produksi Makanan/Camilan Kemasan 🍪",
+            "Produksi Minuman Botol/Kemasan 🧃"
+        ])
+        
+        # Deteksi Tipe Bisnis (Makanan vs Minuman)
+        is_minuman = "Minuman" in model_usaha or "Kopi" in model_usaha or "Jus" in model_usaha
 
-            omzet = st.number_input(
-                "Tebakan Omzet (Kotor) dalam 1 Tahun (Rp):",
-                min_value=0, max_value=4_800_000_000, value=150_000_000, step=10_000_000, format="%d"
-            )
-            
-            # Pertanyaan adaptif tergantung apakah ini bisnis makanan atau minuman
-            st.markdown("---")
-            if is_minuman:
-                kemasan = st.radio("Bagaimana Minuman Disajikan/Dikemas?", [
-                    "Siap minum di Gelas/Cup (Dine-in / Takeaway) 🥤",
-                    "Serbuk/Bubuk kering (Kopi bubuk, Teh seduh) ☕",
-                    "Cair di Botol Kemasan awet (Susu botol, Kopi literan botol) 🧃"
-                ])
-                bahan = st.radio("Bahan Baku Minuman:", [
-                    "100% Nabati (Kopi, Teh, Buah) / Sirup berlogo Halal 🍋",
-                    "Menggunakan Susu Hewani Cair / Bahan import tanpa logo halal 🥛"
-                ])
-            else:
-                kemasan = st.radio("Bagaimana Makanan Disajikan/Dikemas?", [
-                    "Siap konsumsi, dimakan hari itu juga (Piring/Bungkus) 🍝",
-                    "Kemasan kering awet >7 hari (Kue kering, Keripik, Abon) 🥨",
-                    "Frozen food / Olahan daging basah / Kalengan 🥟"
-                ])
-                bahan = st.radio("Bahan Baku Makanan:", [
-                    "Bahan alami sayur/buah atau bumbu kemasan berlogo Halal 🥬",
-                    "Menyembelih ayam/daging sendiri tanpa sertifikat RPH 🥩"
-                ])
-            
-            btn_diagnosa = st.form_submit_button("✨ Cek Izin Sekarang ✨", use_container_width=True)
+        omzet = st.number_input(
+            "Tebakan Omzet (Kotor) dalam 1 Tahun (Rp):",
+            min_value=0, max_value=4_800_000_000, value=150_000_000, step=10_000_000, format="%d"
+        )
+        
+        # Pertanyaan adaptif tergantung apakah ini bisnis makanan atau minuman
+        st.markdown("---")
+        if is_minuman:
+            kemasan = st.radio("Bagaimana Minuman Disajikan/Dikemas?", [
+                "Siap minum di Gelas/Cup (Dine-in / Takeaway) 🥤",
+                "Serbuk/Bubuk kering (Kopi bubuk, Teh seduh) ☕",
+                "Cair di Botol Kemasan awet (Susu botol, Kopi literan botol) 🧃"
+            ])
+            bahan = st.radio("Bahan Baku Minuman:", [
+                "100% Nabati (Kopi, Teh, Buah) / Sirup berlogo Halal 🍋",
+                "Menggunakan Susu Hewani Cair / Bahan import tanpa logo halal 🥛"
+            ])
+        else:
+            kemasan = st.radio("Bagaimana Makanan Disajikan/Dikemas?", [
+                "Siap konsumsi, dimakan hari itu juga (Piring/Bungkus) 🍝",
+                "Kemasan kering awet >7 hari (Kue kering, Keripik, Abon) 🥨",
+                "Frozen food / Olahan daging basah / Kalengan 🥟"
+            ])
+            bahan = st.radio("Bahan Baku Makanan:", [
+                "Bahan alami sayur/buah atau bumbu kemasan berlogo Halal 🥬",
+                "Menyembelih ayam/daging sendiri tanpa sertifikat RPH 🥩"
+            ])
 
     with col_result:
         profil_data = {
