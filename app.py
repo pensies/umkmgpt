@@ -8,7 +8,7 @@ import streamlit as st
 # 1. KONFIGURASI HALAMAN & TEMA (KULINER KEKINIAN & CERAH)
 # ===========================================================================
 st.set_page_config(
-    page_title="UMKMGPT — Cek Izin Kuliner",
+    page_title="KawanKuliner — Cek Izin Kuliner",
     page_icon="🍔",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -220,7 +220,7 @@ Berikut ringkasan rahasia dapur legalitasmu:
 
 # Sidebar disembunyikan
 with st.sidebar:
-    st.caption("UMKMGPT Admin Panel")
+    st.caption("KawanKuliner Admin Panel")
 
 # Header Utama yang Super Catchy
 st.markdown("""
