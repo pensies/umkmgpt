@@ -8,34 +8,27 @@ import streamlit as st
 # 1. KONFIGURASI HALAMAN & TEMA (KULINER KEKINIAN & CERAH)
 # ===========================================================================
 st.set_page_config(
-    page_title="KawanKuliner — Cek Izin Kuliner",
+    page_title="KawanKuliner — Cek Izin & Pajak",
     page_icon="🍔",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS: Font Handwriting (Caveat & Nunito), Warna Cerah, Layout Ringkas
+# Custom CSS: Font Handwriting, Warna Cerah, Layout Ringkas
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@500;700;800&display=swap');
 
-    /* Terapkan font ke seluruh aplikasi */
-    html, body, [class*="css"] {
-        font-family: 'Nunito', sans-serif;
-    }
+    html, body, [class*="css"] { font-family: 'Nunito', sans-serif; }
     
     :root {
-        --primary-color: #D84315; /* Terracotta / Merah Bata Muted */
-        --secondary-color: #E67E22; /* Karamel / Coklat Muda */
-        --accent-color: #4A90E2; /* Biru Kalem */
-        --bg-light: #FDFBF7; /* Krem Kopi Sangat Lembut */
+        --primary-color: #D84315; 
+        --secondary-color: #E67E22; 
+        --accent-color: #4A90E2; 
+        --bg-light: #FDFBF7; 
     }
     
-    /* Bikin layout lebih ringkas / padding dikecilkan */
-    .block-container {
-        padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
-    }
+    .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; }
 
     .main-header {
         background: linear-gradient(135deg, #C0392B 0%, #D35400 100%);
@@ -88,13 +81,13 @@ st.markdown("""
     }
     .metric-value {
         font-family: 'Nunito', sans-serif;
-        font-size: 26px;
+        font-size: 24px;
         font-weight: 800;
         color: #C0392B;
         margin: 5px 0;
     }
     .metric-label {
-        font-size: 14px;
+        font-size: 13px;
         color: #777777;
         text-transform: uppercase;
         font-weight: 800;
@@ -122,7 +115,6 @@ st.markdown("""
         margin-right: 8px;
     }
     
-    /* Sembunyikan elemen bawaan Streamlit */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
@@ -130,7 +122,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ===========================================================================
-# 2. CORE ENGINE: LOGIKA DETERMINISTIK (Tidak terlihat oleh pengguna)
+# 2. CORE ENGINE: LOGIKA DETERMINISTIK (Food & Beverage Adaptif)
 # ===========================================================================
 class SymbolicRuleEngine:
     @staticmethod
@@ -140,44 +132,48 @@ class SymbolicRuleEngine:
         omzet = profil["omzet_tahunan"]
         kemasan = profil["karakteristik_kemasan"]
         bahan = profil["bahan_baku"]
+        tipe_bisnis = profil["tipe_bisnis"] # "MAKANAN" atau "MINUMAN"
         
         # 1. KBLI & OSS RBA
-        if "Warung" in model_usaha or "Resto" in model_usaha:
-            kbli = {"kode": "56102 / 56101", "nama": "Restoran / Warung Makan", "risiko": "Rendah", "izin": "NIB Saja (Langsung Jadi)"}
-        elif "Kopi" in model_usaha or "Jus" in model_usaha:
-            kbli = {"kode": "56303", "nama": "Kedai Minuman", "risiko": "Rendah", "izin": "NIB Saja (Langsung Jadi)"}
-        elif "Katering" in model_usaha or "Jasa Boga" in model_usaha:
-            kbli = {"kode": "56210", "nama": "Jasa Boga / Katering", "risiko": "Menengah Rendah", "izin": "NIB + Sertifikat SLHS"}
-        else:
-            kbli = {"kode": "10799", "nama": "Produksi Makanan Lainnya", "risiko": "Rendah", "izin": "NIB + Izin P-IRT"}
+        if "Warung Makan" in model_usaha or "Resto" in model_usaha:
+            kbli = {"kode": "56101 / 56102", "nama": "Restoran / Warung Makan", "risiko": "Rendah", "izin": "NIB Saja"}
+        elif "Kedai Minuman" in model_usaha or "Kopi" in model_usaha:
+            kbli = {"kode": "56303", "nama": "Rumah Minum / Kedai Minuman", "risiko": "Rendah", "izin": "NIB Saja"}
+        elif "Jasa Boga" in model_usaha or "Katering" in model_usaha:
+            kbli = {"kode": "56210", "nama": "Jasa Boga / Katering", "risiko": "Menengah Rendah", "izin": "NIB + SLHS"}
+        elif "Produksi Makanan" in model_usaha:
+            kbli = {"kode": "10799", "nama": "Industri Produk Makanan Lainnya", "risiko": "Rendah", "izin": "NIB + P-IRT"}
+        else: # Produksi Minuman
+            kbli = {"kode": "11040", "nama": "Industri Minuman Ringan", "risiko": "Rendah/Menengah", "izin": "NIB + Izin Edar"}
 
         # 2. PAJAK UMKM (PP 20/2026)
         ptkp = 500_000_000
         tarif = 0.005
-        
         if "Perorangan" in bentuk_usaha:
             dpp = max(0, omzet - ptkp)
-            status = "Hore! Omzet di bawah 500 Juta." if dpp == 0 else "Kena Pajak PPh 0.5% (atas sisa omzet)"
+            status = "Bebas Pajak (Omzet < 500 Juta)" if dpp == 0 else "Kena PPh 0.5% (Atas sisa omzet)"
         else:
             dpp = omzet
-            status = "Kena Pajak PPh 0,5% Flat"
-            
-        pph = int(dpp * tarif)
-        tax = {"omzet": omzet, "dpp": dpp, "pph_terutang": pph, "status": status}
+            status = "Kena PPh 0,5% Flat"
+        tax = {"omzet": omzet, "dpp": dpp, "pph_terutang": int(dpp * tarif), "status": status}
 
         # 3. IZIN EDAR PANGAN
-        if "Siap saji" in kemasan:
-            food_safety = {"jenis": "Izin SLHS / Higiene Sanitasi", "instansi": "Puskesmas / Dinkes", "info": "Cek kebersihan dapur."}
-        elif ">7 hari" in kemasan:
-            food_safety = {"jenis": "Nomor P-IRT", "instansi": "Dinkes via OSS", "info": "Izin edar produk kemasan rumahan."}
+        if "Siap konsumsi" in kemasan or "Gelas/Cup" in kemasan:
+            food_safety = {"jenis": "SLHS (Higiene Sanitasi)", "instansi": "Dinkes", "info": "Cek kebersihan tempat saji, tidak butuh izin edar label."}
+        elif "Kering" in kemasan or "Serbuk" in kemasan:
+            food_safety = {"jenis": "Nomor P-IRT", "instansi": "Dinkes via OSS", "info": "Cocok untuk produk kering yang awet di suhu ruang."}
         else:
-            food_safety = {"jenis": "Izin BPOM MD", "instansi": "BPOM RI", "info": "Wajib BPOM karena berisiko tinggi."}
+            # Frozen food, Daging, Susu botol cair, dll (Risiko tinggi)
+            food_safety = {"jenis": "Izin BPOM MD", "instansi": "BPOM RI", "info": "Wajib BPOM karena produk basah/cair berisiko tinggi (mudah basi)."}
 
         # 4. SERTIFIKASI HALAL
-        if "Bahan alami" in bahan and omzet <= ptkp:
-            halal = {"jalur": "Jalur SEHATI (Gratis)", "biaya": "Rp 0", "info": "Pakai jalur Self-Declare."}
+        # Cek jika bahan berisiko (Daging non-RPH atau Susu cair)
+        is_risiko_tinggi = ("tanpa sertifikat RPH" in bahan.lower()) or ("susu hewani cair" in bahan.lower())
+        
+        if not is_risiko_tinggi and omzet <= ptkp:
+            halal = {"jalur": "SEHATI (Self Declare)", "biaya": "Gratis (Rp 0)", "info": "Dapat subsidi pemerintah untuk UMKM Mikro."}
         else:
-            halal = {"jalur": "Jalur Reguler", "biaya": "Berbayar", "info": "Perlu audit LPH."}
+            halal = {"jalur": "Jalur Reguler", "biaya": "Berbayar", "info": "Harus diaudit LPH karena bahan baku/omzet."}
 
         return {"profil": profil, "kbli": kbli, "tax": tax, "food_safety": food_safety, "halal": halal}
 
@@ -190,48 +186,44 @@ class EducationalScaffolder:
         p, k, t, f, h = res['profil'], res['kbli'], res['tax'], res['food_safety'], res['halal']
         
         if t["pph_terutang"] == 0:
-            tax_text = f"Pemerintah lagi ngasih kado nih! 🎉 Karena omzet setahunmu (Rp {t['omzet']:,}) masih di bawah Rp 500 Juta, kamu **BEBAS PAJAK (Rp 0)**. Uangnya mending diputar lagi buat nambah menu atau promosi!"
+            tax_text = f"Pemerintah lagi ngasih kado nih! 🎉 Karena omzet setahunmu (Rp {t['omzet']:,}) masih di bawah Rp 500 Juta, kamu **BEBAS PAJAK (Rp 0)**. Uang pajaknya mending diputar lagi buat nambah alat/promosi!"
         else:
-            tax_text = f"Laris manis nih usahanya! 🍜 Karena omzetmu (Rp {t['omzet']:,}) udah ngelewatin batas Rp 500 Juta, kamu cuma perlu nyisihin 0,5% dari sisa kelebihannya, yaitu sekitar **Rp {t['pph_terutang']:,} / tahun**. Semangat terus bayar pajaknya!"
+            tax_text = f"Laris manis nih usahanya! 🚀 Karena omzetmu (Rp {t['omzet']:,}) udah ngelewatin batas Rp 500 Juta, kamu cuma perlu nyisihin 0,5% dari sisa kelebihannya, yaitu sekitar **Rp {t['pph_terutang']:,} / tahun**."
 
         return f"""
-### 💡 Hasil Pengecekan Usaha Kamu
+### 💡 Hasil Pengecekan Bisnis Kamu
 
-Halo **{p['nama_usaha']}**! 🧑‍🍳👩‍🍳  
-Wah, seneng banget lihat kamu peduli sama legalitas usaha. Ngurus izin jaman *now* itu gampang banget dan bikin pelanggan makin percaya sama kualitas makananmu. 
+Halo **{p['nama_usaha']}**! 👋  
+Seneng banget lihat kamu peduli sama legalitas usaha. Ngurus izin jaman *now* itu gampang banget dan bikin pelanggan makin percaya sama produkmu. 
 
 Berikut ringkasan rahasia dapur legalitasmu:
 
-*   📑 **Izin Jualan:** Usahamu tergolong gampang diurus. Kamu cuma butuh **{k['izin']}**.
+*   📑 **Izin Usaha Dasar:** Usahamu tergolong gampang diurus. Kamu cuma butuh izin **{k['izin']}**.
 *   💰 **Pajak UMKM:** {tax_text}
-*   🛡️ **Izin Edar:** Makanan/minumanmu butuh **{f['jenis']}** dari {f['instansi']}.
-*   🕌 **Sertifikat Halal:** Kamu bisa pakai **{h['jalur']}** ({h['biaya']}).
+*   🛡️ **Keamanan Produk:** Produkmu butuh izin **{f['jenis']}** yang dikeluarkan oleh {f['instansi']}. {f['info']}
+*   🕌 **Sertifikat Halal:** Kamu bisa pakai pendaftaran **{h['jalur']}** ({h['biaya']}).
 
-#### 🚀 Apa yang Harus Dilakukan Besok? (Gak Pake Ribet)
+#### 🚀 Rencana Aksi (Tinggal Jalanin Besok Pagi)
 
 *   <span class="step-number">1</span> **Bikin NIB 15 Menit:** Siapin KTP, buka HP, daftar di **[oss.go.id](https://oss.go.id)**. Gratis dan langsung jadi!
-*   <span class="step-number">2</span> **Urus Keamanan Makanan:** Mampir ke Dinkes/Puskesmas buat tanya syarat dapet **{f['jenis']}**.
-*   <span class="step-number">3</span> **Daftar Halal:** Buka **[ptsp.halal.go.id](https://ptsp.halal.go.id)** dan bikin akun.
+*   <span class="step-number">2</span> **Urus Izin {f['jenis']}:** Hubungi {f['instansi']} setempat atau cek website mereka untuk syarat pendaftarannya.
+*   <span class="step-number">3</span> **Daftar Halal:** Buka **[ptsp.halal.go.id](https://ptsp.halal.go.id)**, bikin akun, dan ajukan sertifikasi Halal {h['jalur']}.
 """
 
 # ===========================================================================
 # 4. ANTARMUKA UTAMA APLIKASI
 # ===========================================================================
-
-# Sidebar disembunyikan
 with st.sidebar:
     st.caption("KawanKuliner Admin Panel")
 
-# Header Utama yang Super Catchy
 st.markdown("""
 <div class="main-header">
-    <h1>Cek Izin & Pajak Kuliner 🍔🍹</h1>
-    <p>Bantu Warung, Cafe, & Katering tau izin apa aja yang dibutuhin biar jualan makin tenang & laris manis!</p>
-    <span class="badge-consumer">✨ Gratis • ⚡ Cepat • 💯 Akurat</span>
+    <h1>KawanKuliner 🍔🍹</h1>
+    <p>Cek Izin & Pajak untuk Warung, Kedai Kopi, Katering, hingga Produk Kemasan. 100% Akurat dengan Aturan Pemerintah!</p>
+    <span class="badge-consumer">✨ Gratis • ⚡ Cepat • 💯 Terpercaya</span>
 </div>
 """, unsafe_allow_html=True)
 
-# Tabs
 tab1, tab2 = st.tabs([
     "📝 1. Cek Kebutuhan Izin",
     "📈 2. Simulasi Bebas Pajak"
@@ -245,44 +237,69 @@ with tab1:
         
         with st.form("form_compliance"):
             nama_usaha = st.text_input("Nama Usaha Kulinermu:", value="Kedai Kopi Senja ☕")
-            bentuk_usaha = st.selectbox("Bentuk Usaha:", ["Orang Pribadi (Perorangan) 🙋‍♂️", "Badan Usaha (CV/PT) 🏢"])
-            model_usaha = st.selectbox("Jualan Apa Nih?:", ["Kedai Minuman / Kopi / Jus 🧋", "Warung Makan / Resto / Cafe 🥘", "Jasa Boga / Katering 🍱", "Makanan Kemasan (Keripik/Kue) 🍪"])
+            bentuk_usaha = st.selectbox("Kamu Mendaftar Sebagai:", ["Orang Pribadi (Perorangan) 🙋‍♂️", "Badan Usaha (CV/PT) 🏢"])
             
+            # Kategorisasi yang lebih luas mencakup Makanan & Minuman
+            model_usaha = st.selectbox("Jenis Bisnismu:", [
+                "Warung Makan / Resto / Cafe 🥘", 
+                "Kedai Minuman / Kopi / Jus / Boba 🧋", 
+                "Jasa Boga / Katering 🍱", 
+                "Produksi Makanan/Camilan Kemasan 🍪",
+                "Produksi Minuman Botol/Kemasan 🧃"
+            ])
+            
+            # Deteksi Tipe Bisnis (Makanan vs Minuman)
+            is_minuman = "Minuman" in model_usaha or "Kopi" in model_usaha or "Jus" in model_usaha
+
             omzet = st.number_input(
                 "Tebakan Omzet (Kotor) dalam 1 Tahun (Rp):",
                 min_value=0, max_value=4_800_000_000, value=150_000_000, step=10_000_000, format="%d"
             )
             
-            kemasan = st.radio("Sifat Makanannya:", [
-                "Siap saji, dimakan hari itu juga 🍝",
-                "Kemasan kering awet >7 hari (kue/keripik) 🥨",
-                "Frozen food / olahan daging / susu cair 🥟"
-            ])
+            # Pertanyaan adaptif tergantung apakah ini bisnis makanan atau minuman
+            st.markdown("---")
+            if is_minuman:
+                kemasan = st.radio("Bagaimana Minuman Disajikan/Dikemas?", [
+                    "Siap minum di Gelas/Cup (Dine-in / Takeaway) 🥤",
+                    "Serbuk/Bubuk kering (Kopi bubuk, Teh seduh) ☕",
+                    "Cair di Botol Kemasan awet (Susu botol, Kopi literan botol) 🧃"
+                ])
+                bahan = st.radio("Bahan Baku Minuman:", [
+                    "100% Nabati (Kopi, Teh, Buah) / Sirup berlogo Halal 🍋",
+                    "Menggunakan Susu Hewani Cair / Bahan import tanpa logo halal 🥛"
+                ])
+            else:
+                kemasan = st.radio("Bagaimana Makanan Disajikan/Dikemas?", [
+                    "Siap konsumsi, dimakan hari itu juga (Piring/Bungkus) 🍝",
+                    "Kemasan kering awet >7 hari (Kue kering, Keripik, Abon) 🥨",
+                    "Frozen food / Olahan daging basah / Kalengan 🥟"
+                ])
+                bahan = st.radio("Bahan Baku Makanan:", [
+                    "Bahan alami sayur/buah atau bumbu kemasan berlogo Halal 🥬",
+                    "Menyembelih ayam/daging sendiri tanpa sertifikat RPH 🥩"
+                ])
             
-            bahan = st.radio("Bahan Bakunya:", [
-                "Bahan alami (sayur/buah) atau bumbu kemasan berlogo Halal 🥬",
-                "Sembelih ayam/daging sendiri tanpa sertifikat RPH 🥩"
-            ])
-            
-            # Tombol dengan styling native tapi full width
-            btn_diagnosa = st.form_submit_button("✨ Cek Sekarang ✨", use_container_width=True)
+            btn_diagnosa = st.form_submit_button("✨ Cek Izin Sekarang ✨", use_container_width=True)
 
     with col_result:
         profil_data = {
-            "nama_usaha": nama_usaha, "bentuk_usaha": bentuk_usaha, 
-            "model_usaha": model_usaha, "omzet_tahunan": omzet, 
-            "karakteristik_kemasan": kemasan, "bahan_baku": bahan
+            "nama_usaha": nama_usaha, 
+            "bentuk_usaha": bentuk_usaha, 
+            "model_usaha": model_usaha, 
+            "omzet_tahunan": omzet, 
+            "karakteristik_kemasan": kemasan, 
+            "bahan_baku": bahan,
+            "tipe_bisnis": "MINUMAN" if is_minuman else "MAKANAN"
         }
         eval_result = SymbolicRuleEngine.evaluate(profil_data)
         
-        # Metric Cards (Ringkasan instan dengan bentuk dashed border fun)
         mcol1, mcol2, mcol3 = st.columns(3)
         with mcol1:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Perizinan Dasar</div><div class="metric-value">{eval_result["kbli"]["izin"].split(" ")[0]}</div><small>{eval_result["kbli"]["izin"].replace("NIB Saja ", "")}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Izin Dasar</div><div class="metric-value">{eval_result["kbli"]["izin"].split(" ")[0]}</div><small>{eval_result["kbli"]["izin"]}</small></div>', unsafe_allow_html=True)
         with mcol2:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Pajak Per Tahun</div><div class="metric-value">Rp {eval_result["tax"]["pph_terutang"]:,}</div><small>{"Bebas Pajak! 🎉" if eval_result["tax"]["pph_terutang"]==0 else "Tarif 0.5%"}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Pajak Tahunan</div><div class="metric-value">Rp {eval_result["tax"]["pph_terutang"]:,}</div><small>{"Bebas Pajak! 🎉" if eval_result["tax"]["pph_terutang"]==0 else "Tarif 0.5%"}</small></div>', unsafe_allow_html=True)
         with mcol3:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Jalur Halal</div><div class="metric-value">{eval_result["halal"]["jalur"].split(" ")[1] if " " in eval_result["halal"]["jalur"] else eval_result["halal"]["jalur"]}</div><small>{eval_result["halal"]["biaya"]}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Jalur Halal</div><div class="metric-value">{eval_result["halal"]["jalur"].split(" ")[0]}</div><small>{eval_result["halal"]["biaya"]}</small></div>', unsafe_allow_html=True)
 
         st.markdown('<div class="pedagogical-box">', unsafe_allow_html=True)
         ai_text = EducationalScaffolder.get_local_scaffolding(eval_result)
