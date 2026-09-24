@@ -5,105 +5,127 @@ import pandas as pd
 import streamlit as st
 
 # ===========================================================================
-# 1. KONFIGURASI HALAMAN & TEMA (CONSUMER-FRIENDLY UI)
+# 1. KONFIGURASI HALAMAN & TEMA (KULINER KEKINIAN & CERAH)
 # ===========================================================================
 st.set_page_config(
-    page_title="UMKMGPT — Asisten Legalitas & Pajak UMKM F&B",
-    page_icon="🏪",
+    page_title="UMKMGPT — Cek Izin Kuliner",
+    page_icon="🍔",
     layout="wide",
-    initial_sidebar_state="collapsed" # Sengaja disembunyikan agar pengguna fokus ke layar utama
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS untuk UI/UX startup/consumer app yang ramah
+# Custom CSS: Font Handwriting (Caveat & Nunito), Warna Cerah, Layout Ringkas
 st.markdown("""
 <style>
-    :root {
-        --primary-color: #0F6E6A;
-        --secondary-color: #158F8A;
-        --accent-color: #B4690E;
-        --bg-light: #F8F9FA;
+    @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Nunito:wght@500;700;800&display=swap');
+
+    /* Terapkan font ke seluruh aplikasi */
+    html, body, [class*="css"] {
+        font-family: 'Nunito', sans-serif;
     }
+    
+    :root {
+        --primary-color: #FF5E3A; /* Tomat Merah/Oranye */
+        --secondary-color: #FF9500; /* Jeruk Cerah */
+        --accent-color: #00B4D8; /* Biru Segar untuk kontras */
+        --bg-light: #FFF8F0;
+    }
+    
+    /* Bikin layout lebih ringkas / padding dikecilkan */
+    .block-container {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
+
     .main-header {
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        background: linear-gradient(135deg, #FF5E3A 0%, #FF9500 100%);
         color: white;
-        padding: 30px;
-        border-radius: 12px;
-        margin-bottom: 25px;
-        box-shadow: 0 4px 15px rgba(15, 110, 106, 0.2);
+        padding: 20px 25px;
+        border-radius: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 6px 15px rgba(255, 94, 58, 0.3);
+        text-align: center;
     }
     .main-header h1 {
+        font-family: 'Caveat', cursive;
         color: #FFFFFF !important;
-        font-size: 32px;
-        font-weight: 800;
-        margin-bottom: 8px;
-        letter-spacing: -0.5px;
+        font-size: 52px;
+        font-weight: 700;
+        margin-bottom: 0px;
+        line-height: 1.1;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
     }
     .main-header p {
-        color: #E8F2F0 !important;
-        font-size: 16px;
+        color: #FFE6D5 !important;
+        font-size: 17px;
+        font-weight: 700;
+        margin-top: 5px;
         margin-bottom: 10px;
-        line-height: 1.5;
     }
     .badge-consumer {
-        background-color: #FCEDDB;
-        color: var(--accent-color);
-        font-size: 12px;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 20px;
+        background-color: #FFFFFF;
+        color: #FF5E3A;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 6px 15px;
+        border-radius: 30px;
         display: inline-block;
-        border: 1px solid #E0A96D;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     }
     .card-result {
         background-color: #FFFFFF;
-        border: 1px solid #EAEAEA;
-        border-top: 4px solid var(--primary-color);
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        border: 2px dashed #FF9500;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 10px;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         transition: transform 0.2s ease;
     }
     .card-result:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transform: scale(1.02);
+        background-color: #FFFBF5;
     }
     .metric-value {
-        font-size: 28px;
+        font-family: 'Nunito', sans-serif;
+        font-size: 26px;
         font-weight: 800;
-        color: var(--primary-color);
+        color: #FF5E3A;
         margin: 5px 0;
     }
     .metric-label {
-        font-size: 13px;
-        color: #555555;
+        font-size: 14px;
+        color: #777777;
         text-transform: uppercase;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        font-weight: 800;
+        letter-spacing: 1px;
     }
     .pedagogical-box {
-        background-color: #FFFFFF;
-        border-left: 5px solid var(--accent-color);
-        padding: 20px;
-        border-radius: 0 10px 10px 0;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        margin: 20px 0;
+        background-color: #FFF4E6;
+        border-left: 6px solid #FF5E3A;
+        padding: 15px 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(255, 94, 58, 0.1);
+        margin: 15px 0;
+        color: #4A4A4A;
     }
     .step-number {
         display: inline-block;
-        width: 28px;
-        height: 28px;
-        background-color: var(--primary-color);
+        width: 26px;
+        height: 26px;
+        background-color: #FF9500;
         color: white;
         border-radius: 50%;
         text-align: center;
-        line-height: 28px;
-        font-weight: bold;
-        margin-right: 10px;
+        line-height: 26px;
+        font-weight: 800;
+        margin-right: 8px;
     }
-    /* Menyembunyikan elemen footer bawaan Streamlit agar terlihat seperti app profesional */
+    
+    /* Sembunyikan elemen bawaan Streamlit */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -120,42 +142,42 @@ class SymbolicRuleEngine:
         bahan = profil["bahan_baku"]
         
         # 1. KBLI & OSS RBA
-        if "Warung Makan" in model_usaha or "Resto" in model_usaha:
-            kbli = {"kode": "56102 / 56101", "nama": "Penyediaan Makanan / Restoran", "risiko": "Rendah", "izin": "NIB Berlaku Langsung"}
-        elif "Kopi" in model_usaha or "Minuman" in model_usaha:
-            kbli = {"kode": "56303", "nama": "Kedai Minuman / Kopi", "risiko": "Rendah", "izin": "NIB Berlaku Langsung"}
+        if "Warung" in model_usaha or "Resto" in model_usaha:
+            kbli = {"kode": "56102 / 56101", "nama": "Restoran / Warung Makan", "risiko": "Rendah", "izin": "NIB Saja (Langsung Jadi)"}
+        elif "Kopi" in model_usaha or "Jus" in model_usaha:
+            kbli = {"kode": "56303", "nama": "Kedai Minuman", "risiko": "Rendah", "izin": "NIB Saja (Langsung Jadi)"}
         elif "Katering" in model_usaha or "Jasa Boga" in model_usaha:
-            kbli = {"kode": "56210", "nama": "Jasa Boga untuk Event Tertentu", "risiko": "Menengah Rendah", "izin": "NIB + Sertifikat Standar (SLHS)"}
+            kbli = {"kode": "56210", "nama": "Jasa Boga / Katering", "risiko": "Menengah Rendah", "izin": "NIB + Sertifikat SLHS"}
         else:
-            kbli = {"kode": "10799", "nama": "Industri Produk Makanan Lainnya", "risiko": "Rendah (Mikro)", "izin": "NIB + Izin Edar P-IRT"}
+            kbli = {"kode": "10799", "nama": "Produksi Makanan Lainnya", "risiko": "Rendah", "izin": "NIB + Izin P-IRT"}
 
         # 2. PAJAK UMKM (PP 20/2026)
         ptkp = 500_000_000
         tarif = 0.005
         
-        if "Orang Pribadi" in bentuk_usaha:
+        if "Perorangan" in bentuk_usaha:
             dpp = max(0, omzet - ptkp)
-            status = "Bebas Pajak (Fasilitas PTKP)" if dpp == 0 else "Kena Pajak PPh Final atas Selisih"
+            status = "Hore! Omzet di bawah 500 Juta." if dpp == 0 else "Kena Pajak PPh 0.5% (atas sisa omzet)"
         else:
             dpp = omzet
-            status = "Kena Pajak PPh Final 0,5% Flat (Tanpa PTKP)"
+            status = "Kena Pajak PPh 0,5% Flat"
             
         pph = int(dpp * tarif)
         tax = {"omzet": omzet, "dpp": dpp, "pph_terutang": pph, "status": status}
 
         # 3. IZIN EDAR PANGAN
         if "Siap saji" in kemasan:
-            food_safety = {"jenis": "SLHS (Laik Higiene Sanitasi)", "instansi": "Dinas Kesehatan", "info": "Fokus pada sanitasi dapur."}
+            food_safety = {"jenis": "Izin SLHS / Higiene Sanitasi", "instansi": "Puskesmas / Dinkes", "info": "Cek kebersihan dapur."}
         elif ">7 hari" in kemasan:
-            food_safety = {"jenis": "SPP-PIRT", "instansi": "Dinas Kesehatan", "info": "Pangan olahan kering rumah tangga."}
+            food_safety = {"jenis": "Nomor P-IRT", "instansi": "Dinkes via OSS", "info": "Izin edar produk kemasan rumahan."}
         else:
-            food_safety = {"jenis": "Izin Edar BPOM MD", "instansi": "BPOM RI", "info": "Pangan berisiko tinggi (frozen food/susu)."}
+            food_safety = {"jenis": "Izin BPOM MD", "instansi": "BPOM RI", "info": "Wajib BPOM karena berisiko tinggi."}
 
         # 4. SERTIFIKASI HALAL
-        if "100% Nabati" in bahan and omzet <= ptkp:
-            halal = {"jalur": "SEHATI (Self Declare)", "biaya": "Rp 0 (Gratis)", "info": "Sertifikasi bersubsidi untuk usaha mikro."}
+        if "Bahan alami" in bahan and omzet <= ptkp:
+            halal = {"jalur": "Jalur SEHATI (Gratis)", "biaya": "Rp 0", "info": "Pakai jalur Self-Declare."}
         else:
-            halal = {"jalur": "Reguler (Audit LPH)", "biaya": "Berbayar (PNBP)", "info": "Perlu audit karena bahan kritis atau skala usaha."}
+            halal = {"jalur": "Jalur Reguler", "biaya": "Berbayar", "info": "Perlu audit LPH."}
 
         return {"profil": profil, "kbli": kbli, "tax": tax, "food_safety": food_safety, "halal": halal}
 
@@ -164,121 +186,86 @@ class SymbolicRuleEngine:
 # ===========================================================================
 class EducationalScaffolder:
     @staticmethod
-    def call_gemini_api(eval_res: dict, api_key: str) -> str:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-        prompt = f"""
-        Anda adalah asisten konsultan bisnis yang ramah untuk pemilik UMKM F&B di Indonesia.
-        Jelaskan poin-poin berikut dengan bahasa yang sangat mudah dimengerti, memotivasi, dan tidak mengintimidasi.
-        
-        FAKTA YANG HARUS DIJELASKAN SECARA AKURAT (JANGAN UBAH ANGKA):
-        - Nama Usaha: {eval_res['profil']['nama_usaha']} ({eval_res['profil']['bentuk_usaha']})
-        - Izin Berusaha: Anda hanya perlu mengurus {eval_res['kbli']['izin']} (KBLI {eval_res['kbli']['kode']} - Risiko {eval_res['kbli']['risiko']}).
-        - Pajak: Omzet Rp {eval_res['tax']['omzet']:,}. Beban Pajak Anda adalah Rp {eval_res['tax']['pph_terutang']:,} per tahun. ({eval_res['tax']['status']}).
-        - Keamanan Pangan: Urus izin {eval_res['food_safety']['jenis']} di {eval_res['food_safety']['instansi']}.
-        - Sertifikasi Halal: Anda masuk jalur {eval_res['halal']['jalur']} ({eval_res['halal']['biaya']}).
-
-        Berikan "Rencana Aksi 3 Hari ke Depan" yang praktis agar mereka tahu apa yang harus dikerjakan besok pagi. Gunakan Markdown dan Emoji.
-        """
-        try:
-            response = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, headers={"Content-Type": "application/json"}, timeout=10)
-            response.raise_for_status()
-            return response.json()["candidates"][0]["content"]["parts"][0]["text"]
-        except Exception:
-            return EducationalScaffolder.get_local_scaffolding(eval_res)
-
-    @staticmethod
     def get_local_scaffolding(res: dict) -> str:
         p, k, t, f, h = res['profil'], res['kbli'], res['tax'], res['food_safety'], res['halal']
         
         if t["pph_terutang"] == 0:
-            tax_text = f"Kabar Gembira! Berdasarkan aturan terbaru, karena omzet Anda (Rp {t['omzet']:,}) di bawah batas Rp 500 juta, Anda berhak menikmati fasilitas **Bebas Pajak (Rp 0)**! Putar terus modal Anda untuk membesarkan bisnis."
+            tax_text = f"Pemerintah lagi ngasih kado nih! 🎉 Karena omzet setahunmu (Rp {t['omzet']:,}) masih di bawah Rp 500 Juta, kamu **BEBAS PAJAK (Rp 0)**. Uangnya mending diputar lagi buat nambah menu atau promosi!"
         else:
-            tax_text = f"Bisnis Anda berkembang luar biasa! Omzet Anda (Rp {t['omzet']:,}) telah menembus batas Rp 500 juta. Anda cukup membayar pajak 0,5% dari selisihnya, yakni **Rp {t['pph_terutang']:,} per tahun**. Kontribusi hebat untuk kemajuan bersama!"
+            tax_text = f"Laris manis nih usahanya! 🍜 Karena omzetmu (Rp {t['omzet']:,}) udah ngelewatin batas Rp 500 Juta, kamu cuma perlu nyisihin 0,5% dari sisa kelebihannya, yaitu sekitar **Rp {t['pph_terutang']:,} / tahun**. Semangat terus bayar pajaknya!"
 
         return f"""
-### 💡 Hasil Analisis & Panduan Legalitas Anda
+### 💡 Hasil Pengecekan Usaha Kamu
 
-Halo Kak Pengelola **{p['nama_usaha']}**! 
-Terima kasih sudah peduli dengan legalitas usaha. Mengurus perizinan itu tidak seseram yang dibayangkan kok! Justru ini adalah tiket emas untuk mendapat modal usaha (KUR), kemitraan, dan menumbuhkan rasa percaya dari pelanggan Anda.
+Halo **{p['nama_usaha']}**! 🧑‍🍳👩‍🍳  
+Wah, seneng banget lihat kamu peduli sama legalitas usaha. Ngurus izin jaman *now* itu gampang banget dan bikin pelanggan makin percaya sama kualitas makananmu. 
 
-Berikut adalah ringkasan khusus untuk bisnis Anda:
+Berikut ringkasan rahasia dapur legalitasmu:
 
-#### 📊 1. Ringkasan Status Usaha
-*   **Izin Berusaha:** Bisnis Anda tergolong aman (Risiko {k['risiko']}). Anda cukup mengurus **{k['izin']}** secara online.
-*   **Perhitungan Pajak:** {tax_text}
-*   **Keamanan Pangan:** Jenis produk Anda mewajibkan Anda memiliki **{f['jenis']}** dari {f['instansi']}.
-*   **Sertifikat Halal:** Kabar baik, Anda bisa mendaftar melalui jalur **{h['jalur']}** ({h['biaya']}).
+*   📑 **Izin Jualan:** Usahamu tergolong gampang diurus. Kamu cuma butuh **{k['izin']}**.
+*   💰 **Pajak UMKM:** {tax_text}
+*   🛡️ **Izin Edar:** Makanan/minumanmu butuh **{f['jenis']}** dari {f['instansi']}.
+*   🕌 **Sertifikat Halal:** Kamu bisa pakai **{h['jalur']}** ({h['biaya']}).
 
-#### 🚀 2. Rencana Aksi (Apa yang harus dilakukan besok?)
-Mari kita selesaikan perlahan agar tidak pusing:
+#### 🚀 Apa yang Harus Dilakukan Besok? (Gak Pake Ribet)
 
-*   <span class="step-number">1</span> **Langkah 1 (Selesaikan Hari Ini): Buat Akun OSS**  
-    Siapkan KTP, buka situs resmi **[oss.go.id](https://oss.go.id)**. Daftar akun baru, dan NIB Anda akan terbit gratis secara instan dalam 15 menit. NIB ini adalah "KTP" bagi usaha Anda.
-*   <span class="step-number">2</span> **Langkah 2: Urus Keamanan Pangan**  
-    Kunjungi kantor kecamatan / Puskesmas terdekat untuk mencari info pengurusan pendaftaran {f['jenis']}. {f['info']}
-*   <span class="step-number">3</span> **Langkah 3: Daftar Halal**  
-    Jika NIB sudah di tangan, buka **[ptsp.halal.go.id](https://ptsp.halal.go.id)**. Ajukan pendaftaran dengan jalur {h['jalur']} dan cari pendamping PPH terdekat di daerah Anda.
+*   <span class="step-number">1</span> **Bikin NIB 15 Menit:** Siapin KTP, buka HP, daftar di **[oss.go.id](https://oss.go.id)**. Gratis dan langsung jadi!
+*   <span class="step-number">2</span> **Urus Keamanan Makanan:** Mampir ke Dinkes/Puskesmas buat tanya syarat dapet **{f['jenis']}**.
+*   <span class="step-number">3</span> **Daftar Halal:** Buka **[ptsp.halal.go.id](https://ptsp.halal.go.id)** dan bikin akun.
 """
 
 # ===========================================================================
-# 4. ANTARMUKA UTAMA APLIKASI (TANPA IDENTITAS PENELITI)
+# 4. ANTARMUKA UTAMA APLIKASI
 # ===========================================================================
 
-# Sidebar disembunyikan secara default, hanya menyimpan opsi rahasia untuk admin/API
+# Sidebar disembunyikan
 with st.sidebar:
-    st.image("https://img.icons8.com/color/120/000000/shop.png", width=70)
-    st.markdown("### UMKMGPT Admin Panel")
-    api_key_input = st.text_input(
-        "Koneksi AI (Opsional):",
-        type="password",
-        help="Kosongkan saja untuk pemakaian normal (Offline Mode). Khusus untuk admin jika ingin mengaktifkan Neural Engine via API."
-    )
+    st.caption("UMKMGPT Admin Panel")
 
-# Header Utama (Consumer-Facing)
+# Header Utama yang Super Catchy
 st.markdown("""
 <div class="main-header">
-    <h1>UMKMGPT: Cek Izin & Pajak Kuliner 👩‍🍳</h1>
-    <p>Aplikasi gratis untuk membantu pemilik Warung, Cafe, dan Katering mengetahui persis Izin Usaha, Pajak, dan Jalur Halal apa yang cocok untuk bisnisnya dalam 1 menit.</p>
-    <span class="badge-consumer">Cepat • Akurat • Sesuai Aturan Pemerintah Terbaru</span>
+    <h1>Cek Izin & Pajak Kuliner 🍔🍹</h1>
+    <p>Bantu Warung, Cafe, & Katering tau izin apa aja yang dibutuhin biar jualan makin tenang & laris manis!</p>
+    <span class="badge-consumer">✨ Gratis • ⚡ Cepat • 💯 Akurat</span>
 </div>
 """, unsafe_allow_html=True)
 
-# Tabs Navigasi (Hanya fitur fungsional, hilangkan metodologi riset)
+# Tabs
 tab1, tab2 = st.tabs([
-    "🧭 1. Cek Kebutuhan Izin Usaha Saya",
-    "🧮 2. Simulasi Bebas Pajak 500 Juta"
+    "📝 1. Cek Kebutuhan Izin",
+    "📈 2. Simulasi Bebas Pajak"
 ])
 
-# ── TAB 1: DIAGNOSIS KEPATUHAN USAHA ──────────────────────────────────────
 with tab1:
-    col_input, col_result = st.columns([1, 1.4], gap="large")
+    col_input, col_result = st.columns([1, 1.4], gap="medium")
     
     with col_input:
-        st.subheader("📝 Masukkan Data Usaha Anda")
-        st.caption("Data ini tidak kami simpan, hanya untuk kalkulasi otomatis.")
+        st.markdown("#### 🛒 Ceritain Soal Usahamu")
         
         with st.form("form_compliance"):
-            nama_usaha = st.text_input("Nama Usaha Kuliner Anda:", value="Dapur Bu Asih")
-            bentuk_usaha = st.selectbox("Bentuk Usaha:", ["Orang Pribadi (WPOP/Perorangan)", "Badan Usaha (CV/PT/Koperasi)"])
-            model_usaha = st.selectbox("Kategori Bisnis Utama:", ["Kedai Minuman / Kopi / Jus", "Warung Makan / Resto / Cafe", "Jasa Boga / Katering Porsi Besar", "Produksi Makanan Kemasan Awet"])
+            nama_usaha = st.text_input("Nama Usaha Kulinermu:", value="Kedai Kopi Senja ☕")
+            bentuk_usaha = st.selectbox("Bentuk Usaha:", ["Orang Pribadi (Perorangan) 🙋‍♂️", "Badan Usaha (CV/PT) 🏢"])
+            model_usaha = st.selectbox("Jualan Apa Nih?:", ["Kedai Minuman / Kopi / Jus 🧋", "Warung Makan / Resto / Cafe 🥘", "Jasa Boga / Katering 🍱", "Makanan Kemasan (Keripik/Kue) 🍪"])
             
             omzet = st.number_input(
-                "Perkiraan Omzet (Pendapatan Kotor) dalam 1 Tahun (Rp):",
-                min_value=0, max_value=4_800_000_000, value=250_000_000, step=50_000_000, format="%d"
+                "Tebakan Omzet (Kotor) dalam 1 Tahun (Rp):",
+                min_value=0, max_value=4_800_000_000, value=150_000_000, step=10_000_000, format="%d"
             )
             
-            kemasan = st.radio("Jenis Makanan yang Dijual:", [
-                "Siap saji, dimakan hari itu juga (nasi bungkus, es teh, dll)",
-                "Kemasan kering tahan lebih dari 7 hari (kue kering, keripik, abon)",
-                "Olahan beku (frozen food) / daging kemasan / susu cair"
+            kemasan = st.radio("Sifat Makanannya:", [
+                "Siap saji, dimakan hari itu juga 🍝",
+                "Kemasan kering awet >7 hari (kue/keripik) 🥨",
+                "Frozen food / olahan daging / susu cair 🥟"
             ])
             
-            bahan = st.radio("Bahan Baku Utama:", [
-                "Bahan alami (sayur/buah) atau bahan kemasan yang sudah ada logo Halal",
-                "Saya menyembelih ayam/daging sendiri tanpa sertifikat potong hewan"
+            bahan = st.radio("Bahan Bakunya:", [
+                "Bahan alami (sayur/buah) atau bumbu kemasan berlogo Halal 🥬",
+                "Sembelih ayam/daging sendiri tanpa sertifikat RPH 🥩"
             ])
             
-            btn_diagnosa = st.form_submit_button("🔍 Cek Sekarang", use_container_width=True)
+            # Tombol dengan styling native tapi full width
+            btn_diagnosa = st.form_submit_button("✨ Cek Sekarang ✨", use_container_width=True)
 
     with col_result:
         profil_data = {
@@ -288,54 +275,45 @@ with tab1:
         }
         eval_result = SymbolicRuleEngine.evaluate(profil_data)
         
-        st.subheader("🎯 Ringkasan Status Bisnis Anda")
-        
-        # Metric Cards (Ringkasan instan)
+        # Metric Cards (Ringkasan instan dengan bentuk dashed border fun)
         mcol1, mcol2, mcol3 = st.columns(3)
         with mcol1:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Perizinan Dasar</div><div class="metric-value" style="font-size:20px;">{eval_result["kbli"]["izin"].split(" ")[0]}</div><small>{eval_result["kbli"]["risiko"]}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Perizinan Dasar</div><div class="metric-value">{eval_result["kbli"]["izin"].split(" ")[0]}</div><small>{eval_result["kbli"]["izin"].replace("NIB Saja ", "")}</small></div>', unsafe_allow_html=True)
         with mcol2:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Pajak Per Tahun</div><div class="metric-value" style="font-size:20px;">Rp {eval_result["tax"]["pph_terutang"]:,}</div><small>{"Bebas Pajak! 🎉" if eval_result["tax"]["pph_terutang"]==0 else "Tarif UMKM 0.5%"}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Pajak Per Tahun</div><div class="metric-value">Rp {eval_result["tax"]["pph_terutang"]:,}</div><small>{"Bebas Pajak! 🎉" if eval_result["tax"]["pph_terutang"]==0 else "Tarif 0.5%"}</small></div>', unsafe_allow_html=True)
         with mcol3:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Status Halal</div><div class="metric-value" style="font-size:20px;">{eval_result["halal"]["jalur"].split(" ")[0]}</div><small>{eval_result["halal"]["biaya"]}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Jalur Halal</div><div class="metric-value">{eval_result["halal"]["jalur"].split(" ")[1] if " " in eval_result["halal"]["jalur"] else eval_result["halal"]["jalur"]}</div><small>{eval_result["halal"]["biaya"]}</small></div>', unsafe_allow_html=True)
 
-        st.markdown("### 💬 Arahan Spesifik untuk Anda")
-        with st.container():
-            st.markdown('<div class="pedagogical-box">', unsafe_allow_html=True)
-            if api_key_input:
-                with st.spinner("Sedang merumuskan saran terbaik untuk Anda..."):
-                    ai_text = EducationalScaffolder.call_gemini_api(eval_result, api_key_input)
-            else:
-                ai_text = EducationalScaffolder.get_local_scaffolding(eval_result)
-            
-            st.markdown(ai_text, unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-            
-            st.download_button("📥 Unduh Rencana Aksi Saya (.md)", data=ai_text, file_name=f"Panduan_Legalitas_{nama_usaha}.md", mime="text/markdown", use_container_width=True)
+        st.markdown('<div class="pedagogical-box">', unsafe_allow_html=True)
+        ai_text = EducationalScaffolder.get_local_scaffolding(eval_result)
+        st.markdown(ai_text, unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.download_button("📥 Simpan Panduan Ini (.md)", data=ai_text, file_name=f"Panduan_Asik_{nama_usaha.split(' ')[0]}.md", mime="text/markdown", use_container_width=True)
 
-# ── TAB 2: SIMULATOR PAJAK INTERAKTIF ─────────────────────────────────────
 with tab2:
-    st.subheader("🧮 Benarkah UMKM Bebas Pajak? Cek di sini!")
-    st.caption("Geser slider omzet di bawah ini untuk melihat apakah Anda wajib bayar pajak atau masuk kategori bebas pajak.")
+    st.markdown("### 🧮 Benarkah Usaha Kecil Bebas Pajak?")
+    st.caption("Cobain geser slider di bawah buat buktiin kalau omzet di bawah 500 Juta itu beneran nggak bayar pajak buat perorangan!")
     
-    scol1, scol2 = st.columns([1, 2.5])
+    scol1, scol2 = st.columns([1.2, 2.5], gap="medium")
     
     with scol1:
-        st.markdown("#### Kondisi Usaha Anda")
-        sim_bentuk = st.radio("Anda Mendaftar Sebagai:", ["Orang Pribadi (Perorangan)", "Badan Usaha (CV/PT)"], key="sim_bentuk")
-        sim_omzet = st.slider("Omzet (Pendapatan) Tahunan Anda:", 0, 1500, 300, 50, format="%d Juta") * 1_000_000
+        sim_bentuk = st.radio("Kamu daftar sebagai:", ["Orang Pribadi (Perorangan) 🙋‍♂️", "Badan Usaha (CV/PT) 🏢"], key="sim_bentuk")
+        sim_omzet = st.slider("Coba Geser Omzetmu:", 0, 1500, 250, 50, format="%d Juta") * 1_000_000
         
-        sim_dpp = max(0, sim_omzet - 500_000_000) if "Orang Pribadi" in sim_bentuk else sim_omzet
+        sim_dpp = max(0, sim_omzet - 500_000_000) if "Perorangan" in sim_bentuk else sim_omzet
         sim_pph = int(sim_dpp * 0.005)
         
-        st.markdown(f"**Uang Kena Pajak:** Rp {sim_dpp:,.0f}")
-        st.markdown(f"<h3 style='color:var(--primary-color)'>Pajak yang Disetor:<br/>Rp {sim_pph:,.0f}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color: #FFF4E6; padding: 15px; border-radius: 10px; border: 2px dashed #FF9500; text-align: center; margin-top: 15px;'>", unsafe_allow_html=True)
+        st.markdown(f"<p style='margin:0; color: #777; font-weight: 800;'>Uang Kena Pajak: Rp {sim_dpp:,.0f}</p>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color:#FF5E3A; margin: 5px 0 0 0;'>Pajaknya:<br/>Rp {sim_pph:,.0f}</h2>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
 
     with scol2:
         omzet_range = list(range(0, 1500_000_000 + 1, 100_000_000))
         tax_data = []
         for o in omzet_range:
-            if "Orang Pribadi" in sim_bentuk:
+            if "Perorangan" in sim_bentuk:
                 t = max(0, o - 500_000_000) * 0.005
             else:
                 t = o * 0.005
@@ -344,12 +322,8 @@ with tab2:
         df = pd.DataFrame(tax_data)
         df.set_index("OmzetTahunan", inplace=True)
         
-        st.markdown("#### Grafik Beban Pajak")
-        st.line_chart(df, y="PajakTerutang", color="#B4690E")
-        if "Orang Pribadi" in sim_bentuk:
-            st.info("💡 **Penjelasan:** Lihat garis datar di awal grafik. Jika omzet Anda masih di bawah Rp 500.000.000, pajak Anda adalah 0 Rupiah! Pemerintah memberikan insentif ini khusus untuk pengusaha perorangan.")
+        st.line_chart(df, y="PajakTerutang", color="#FF5E3A")
+        if "Perorangan" in sim_bentuk:
+            st.info("💡 **Liat Garis Datarnya!** Selama omzetmu belum nabrak Rp 500 Juta, garis pajaknya anteng di angka 0. Enak banget kan?")
         else:
-            st.warning("⚠️ **Penjelasan:** Untuk CV atau PT, garis pajak langsung naik sejak awal karena Badan Usaha wajib membayar 0,5% dari semua omzet tanpa potongan Rp 500 juta.")
-
-st.divider()
-st.caption("Powered by UMKMGPT — Solusi Pintar Legalitas Bisnis F&B Indonesia")
+            st.warning("⚠️ **Garis Langsung Naik!** Karena CV/PT udah level badan usaha, pemerintah nggak ngasih diskon 500 Juta. Pajak 0,5% langsung jalan dari omzet pertama.")
