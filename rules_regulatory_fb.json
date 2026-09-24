@@ -1,0 +1,108 @@
+{
+    "project_metadata": {
+        "title": "Neuro-Symbolic AI Assistant for Deterministic Regulatory Compliance in ASEAN Food & Beverage MSMEs",
+        "author": "Paulus Pensies Anggoro (2520101007)",
+        "specialization": "Education Informatics (EI)",
+        "supervisor": "Dr. Theresia Herlina, S.Kom., M.T",
+        "institution": "Magister Teknologi Informasi, Universitas Pradita",
+        "version": "1.0-Fase1"
+    },
+    "tax_rules_pp20_2026": {
+        "basis_hukum": "PP No. 20/2026 tentang PPh Final UMKM dan UU Harmonisasi Peraturan Perpajakan (HPP)",
+        "threshold_wpop_bebas_pajak": 500000000,
+        "tarif_pph_final": 0.005,
+        "max_omzet_umkm": 4800000000,
+        "time_limits": {
+            "WPOP": "7 tahun pajak sejak terdaftar",
+            "CV_Koperasi": "4 tahun pajak",
+            "PT": "3 tahun pajak"
+        }
+    },
+    "kbli_perizinan_oss": [
+        {
+            "kode_kbli": "56102",
+            "nama_kbli": "Rumah Makan / Warung Makan",
+            "deskripsi": "Penyediaan makanan siap saji dengan fasilitas makan di tempat skala sederhana/kedai.",
+            "tingkat_risiko": "Rendah",
+            "kewajiban_izin": "NIB (Nomor Induk Berusaha)",
+            "keterangan": "NIB berlaku langsung sebagai izin operasional dan komersial tanpa sertifikat standar terverifikasi."
+        },
+        {
+            "kode_kbli": "56303",
+            "nama_kbli": "Kedai Minuman / Minuman Ringan / Coffee Shop",
+            "deskripsi": "Penyediaan minuman seperti kopi, teh, jus, boba dengan atau tanpa makanan ringan.",
+            "tingkat_risiko": "Rendah",
+            "kewajiban_izin": "NIB (Nomor Induk Berusaha)",
+            "keterangan": "NIB berlaku langsung sebagai izin operasional."
+        },
+        {
+            "kode_kbli": "56210",
+            "nama_kbli": "Jasa Boga untuk Suatu Event Tertentu (Event Catering)",
+            "deskripsi": "Penyediaan makanan atas dasar kontrak/pesanan untuk acara, kantor, atau pesta.",
+            "tingkat_risiko": "Menengah Rendah",
+            "kewajiban_izin": "NIB + Sertifikat Standar (Self-Declare / SLHS Dinkes)",
+            "keterangan": "Membutuhkan pemenuhan standar sanitasi tempat pengolahan makanan."
+        },
+        {
+            "kode_kbli": "10799",
+            "nama_kbli": "Industri Produk Makanan Lainnya (Makanan Ringan Kemasan)",
+            "deskripsi": "Produksi kue kering, keripik, sambal kering, abon olahan rumahan tahan simpan.",
+            "tingkat_risiko": "Rendah (Skala Mikro)",
+            "kewajiban_izin": "NIB + Izin Edar P-IRT (Dinkes)",
+            "keterangan": "Wajib izin edar pangan industri rumah tangga untuk produk yang dikemas eceran."
+        }
+    ],
+    "izin_edar_pangan": {
+        "jalur_slhs": {
+            "kategori": "Pangan Siap Saji (Dine-in / Katering)",
+            "instansi": "Dinas Kesehatan / Puskesmas",
+            "dokumen": "Sertifikat Laik Higiene Sanitasi (SLHS)",
+            "syarat": "Inspeksi dapur/tempat saji, tes air bersih, pelatihan penjamah makanan."
+        },
+        "jalur_pirt": {
+            "kategori": "Pangan Kemasan Tahan Simpan (>7 hari suhu ruang)",
+            "instansi": "Dinas Kesehatan Kab/Kota via OSS SPP-IRT",
+            "dokumen": "Sertifikat Produksi Pangan Industri Rumah Tangga (SPP-PIRT)",
+            "kriteria_produk": [
+                "Produksi skala rumah tangga (bukan pabrik terpisah)",
+                "Kadar air rendah atau produk kering (keripik, kue kering, kopi bubuk, abon nabati)",
+                "Tidak mengandung daging segar, susu cair olahan, makanan beku berisiko tinggi",
+                "Masa simpan lebih dari 7 hari di suhu ruang normal"
+            ]
+        },
+        "jalur_bpom_md": {
+            "kategori": "Pangan Olahan Berisiko Tinggi atau Skala Pabrik",
+            "instansi": "Badan Pengawas Obat dan Makanan (BPOM RI)",
+            "dokumen": "Izin Edar BPOM MD (Makanan Dalam)",
+            "kriteria_produk": [
+                "Frozen food berbahan hewani (nugget, sosis olahan)",
+                "Susu pasteurisasi / olahan susu cair",
+                "Pangan diet khusus, pangan bayi, atau Air Minum Dalam Kemasan (AMDK)",
+                "Fasilitas produksi terpisah dari rumah tinggal"
+            ]
+        }
+    },
+    "sertifikasi_halal_bpjph": {
+        "jalur_sehati_self_declare": {
+            "nama_program": "SEHATI (Sertifikasi Halal Gratis) - Self Declare",
+            "biaya": "Rp 0 (Gratis disubsidi pemerintah)",
+            "kriteria": [
+                "Usaha berskala Mikro atau Kecil (omzet < Rp 500 juta / tahun)",
+                "Produk tidak berisiko (bukan sembelihan hewan mandiri tanpa sertifikat)",
+                "Bahan baku 100% sudah jelas kehalalannya (bersertifikat halal atau bahan alami nabati)",
+                "Proses produksi sederhana dan bebas kontaminasi najis",
+                "Didampingi oleh Pendamping Proses Produk Halal (Pendamping PPH)"
+            ]
+        },
+        "jalur_reguler": {
+            "nama_program": "Sertifikasi Halal Reguler",
+            "biaya": "Berbayar sesuai tarif PNBP BPJPH & LPH",
+            "kriteria": [
+                "Menggunakan bahan baku hewani dari RPH/unggas mandiri tanpa sertifikat Juleha",
+                "Menggunakan bahan kimia aditif impor tanpa logo halal yang diakui",
+                "Skala usaha Menengah atau Besar",
+                "Proses pengolahan rumit melibatkan pemeriksaan laboratorium oleh LPH"
+            ]
+        }
+    }
+}
