@@ -25,10 +25,10 @@ st.markdown("""
     }
     
     :root {
-        --primary-color: #FF5E3A; /* Tomat Merah/Oranye */
-        --secondary-color: #FF9500; /* Jeruk Cerah */
-        --accent-color: #00B4D8; /* Biru Segar untuk kontras */
-        --bg-light: #FFF8F0;
+        --primary-color: #D84315; /* Terracotta / Merah Bata Muted */
+        --secondary-color: #E67E22; /* Karamel / Coklat Muda */
+        --accent-color: #4A90E2; /* Biru Kalem */
+        --bg-light: #FDFBF7; /* Krem Kopi Sangat Lembut */
     }
     
     /* Bikin layout lebih ringkas / padding dikecilkan */
@@ -38,12 +38,12 @@ st.markdown("""
     }
 
     .main-header {
-        background: linear-gradient(135deg, #FF5E3A 0%, #FF9500 100%);
+        background: linear-gradient(135deg, #C0392B 0%, #D35400 100%);
         color: white;
         padding: 20px 25px;
         border-radius: 16px;
         margin-bottom: 20px;
-        box-shadow: 0 6px 15px rgba(255, 94, 58, 0.3);
+        box-shadow: 0 6px 15px rgba(192, 57, 43, 0.2);
         text-align: center;
     }
     .main-header h1 {
@@ -64,7 +64,7 @@ st.markdown("""
     }
     .badge-consumer {
         background-color: #FFFFFF;
-        color: #FF5E3A;
+        color: #C0392B;
         font-size: 13px;
         font-weight: 800;
         padding: 6px 15px;
@@ -74,7 +74,7 @@ st.markdown("""
     }
     .card-result {
         background-color: #FFFFFF;
-        border: 2px dashed #FF9500;
+        border: 2px dashed #D35400;
         border-radius: 15px;
         padding: 15px;
         margin-bottom: 10px;
@@ -84,13 +84,13 @@ st.markdown("""
     }
     .card-result:hover {
         transform: scale(1.02);
-        background-color: #FFFBF5;
+        background-color: #FDFBF7;
     }
     .metric-value {
         font-family: 'Nunito', sans-serif;
         font-size: 26px;
         font-weight: 800;
-        color: #FF5E3A;
+        color: #C0392B;
         margin: 5px 0;
     }
     .metric-label {
@@ -101,11 +101,11 @@ st.markdown("""
         letter-spacing: 1px;
     }
     .pedagogical-box {
-        background-color: #FFF4E6;
-        border-left: 6px solid #FF5E3A;
+        background-color: #FDFBF7;
+        border-left: 6px solid #C0392B;
         padding: 15px 20px;
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(255, 94, 58, 0.1);
+        box-shadow: 0 2px 8px rgba(192, 57, 43, 0.08);
         margin: 15px 0;
         color: #4A4A4A;
     }
@@ -113,7 +113,7 @@ st.markdown("""
         display: inline-block;
         width: 26px;
         height: 26px;
-        background-color: #FF9500;
+        background-color: #D35400;
         color: white;
         border-radius: 50%;
         text-align: center;
@@ -304,9 +304,9 @@ with tab2:
         sim_dpp = max(0, sim_omzet - 500_000_000) if "Perorangan" in sim_bentuk else sim_omzet
         sim_pph = int(sim_dpp * 0.005)
         
-        st.markdown(f"<div style='background-color: #FFF4E6; padding: 15px; border-radius: 10px; border: 2px dashed #FF9500; text-align: center; margin-top: 15px;'>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background-color: #FDFBF7; padding: 15px; border-radius: 10px; border: 2px dashed #D35400; text-align: center; margin-top: 15px;'>", unsafe_allow_html=True)
         st.markdown(f"<p style='margin:0; color: #777; font-weight: 800;'>Uang Kena Pajak: Rp {sim_dpp:,.0f}</p>", unsafe_allow_html=True)
-        st.markdown(f"<h2 style='color:#FF5E3A; margin: 5px 0 0 0;'>Pajaknya:<br/>Rp {sim_pph:,.0f}</h2>", unsafe_allow_html=True)
+        st.markdown(f"<h2 style='color:#C0392B; margin: 5px 0 0 0;'>Pajaknya:<br/>Rp {sim_pph:,.0f}</h2>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     with scol2:
@@ -322,7 +322,7 @@ with tab2:
         df = pd.DataFrame(tax_data)
         df.set_index("OmzetTahunan", inplace=True)
         
-        st.line_chart(df, y="PajakTerutang", color="#FF5E3A")
+        st.line_chart(df, y="PajakTerutang", color="#C0392B")
         if "Perorangan" in sim_bentuk:
             st.info("💡 **Liat Garis Datarnya!** Selama omzetmu belum nabrak Rp 500 Juta, garis pajaknya anteng di angka 0. Enak banget kan?")
         else:
