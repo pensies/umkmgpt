@@ -5,16 +5,16 @@ import pandas as pd
 import streamlit as st
 
 # ===========================================================================
-# 1. KONFIGURASI HALAMAN & TEMA (TEAL & MINT ACADEMIC PALETTE)
+# 1. KONFIGURASI HALAMAN & TEMA (CONSUMER-FRIENDLY UI)
 # ===========================================================================
 st.set_page_config(
-    page_title="UMKMGPT — Asisten Kepatuhan Regulasi UMKM F&B",
-    page_icon="🎓",
+    page_title="UMKMGPT — Asisten Legalitas & Pajak UMKM F&B",
+    page_icon="🏪",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed" # Sengaja disembunyikan agar pengguna fokus ke layar utama
 )
 
-# Custom CSS untuk UI/UX yang mencerminkan aplikasi edukasi premium
+# Custom CSS untuk UI/UX startup/consumer app yang ramah
 st.markdown("""
 <style>
     :root {
@@ -22,7 +22,6 @@ st.markdown("""
         --secondary-color: #158F8A;
         --accent-color: #B4690E;
         --bg-light: #F8F9FA;
-        --bg-highlight: #E8F2F0;
     }
     .main-header {
         background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -45,13 +44,13 @@ st.markdown("""
         margin-bottom: 10px;
         line-height: 1.5;
     }
-    .badge-research {
+    .badge-consumer {
         background-color: #FCEDDB;
         color: var(--accent-color);
         font-size: 12px;
         font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 8px;
+        padding: 4px 12px;
+        border-radius: 20px;
         display: inline-block;
         border: 1px solid #E0A96D;
     }
@@ -102,20 +101,18 @@ st.markdown("""
         font-weight: bold;
         margin-right: 10px;
     }
+    /* Menyembunyikan elemen footer bawaan Streamlit agar terlihat seperti app profesional */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
 # ===========================================================================
-# 2. LAPIS SIMBOLIK: MESIN ATURAN DETERMINISTIK (100% BEBAS HALUSINASI)
-# Menggunakan pola Object-Oriented untuk modularitas kode riset
+# 2. CORE ENGINE: LOGIKA DETERMINISTIK (Tidak terlihat oleh pengguna)
 # ===========================================================================
 class SymbolicRuleEngine:
     @staticmethod
     def evaluate(profil: dict) -> dict:
-        """
-        Mengeksekusi pohon keputusan deterministik (Symbolic Decision Tree)
-        berbasis hukum Indonesia (PP 28/2025, PP 20/2026, Perka BPOM 22/2018, SOP BPJPH).
-        """
         model_usaha = profil["model_usaha"]
         bentuk_usaha = profil["bentuk_usaha"]
         omzet = profil["omzet_tahunan"]
@@ -163,114 +160,93 @@ class SymbolicRuleEngine:
         return {"profil": profil, "kbli": kbli, "tax": tax, "food_safety": food_safety, "halal": halal}
 
 # ===========================================================================
-# 3. LAPIS NEURAL: PEDAGOGICAL REPHRASER & EDUCATIONAL SCAFFOLDING
+# 3. CONSUMER REPHRASER: KONSULTAN VIRTUAL UMKM
 # ===========================================================================
 class EducationalScaffolder:
     @staticmethod
     def call_gemini_api(eval_res: dict, api_key: str) -> str:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
-        
         prompt = f"""
-        Anda adalah asisten konsultan dan mentor bisnis (berfokus pada Education Informatics) untuk pemilik UMKM F&B Indonesia.
-        Gunakan prinsip "Educational Scaffolding":
-        1. Kurangi beban kognitif (gunakan poin-poin singkat).
-        2. Berikan dorongan motivasi (empatik).
-        3. Buat rencana aksi langkah-demi-langkah yang jelas.
-
-        HASIL DETERMINISTIK (WAJIB DIPERTAHANKAN ANGKA & FAKTANYA):
-        - Usaha: {eval_res['profil']['nama_usaha']} ({eval_res['profil']['bentuk_usaha']})
-        - KBLI: {eval_res['kbli']['kode']} - Risiko {eval_res['kbli']['risiko']} -> Izin: {eval_res['kbli']['izin']}
-        - Omzet: Rp {eval_res['tax']['omzet']:,} -> PPh Final: Rp {eval_res['tax']['pph_terutang']:,} ({eval_res['tax']['status']})
-        - Keamanan Pangan: {eval_res['food_safety']['jenis']} dari {eval_res['food_safety']['instansi']}
-        - Halal: {eval_res['halal']['jalur']} - Biaya: {eval_res['halal']['biaya']}
-
-        Tuliskan panduan edukatif berformat Markdown. Jangan mengubah angka pajak sedikitpun. Beri sapaan, jelaskan mengapa pajaknya segitu (berdasarkan PP 20/2026), lalu beri "Rencana Aksi 3 Hari ke Depan".
-        """
+        Anda adalah asisten konsultan bisnis yang ramah untuk pemilik UMKM F&B di Indonesia.
+        Jelaskan poin-poin berikut dengan bahasa yang sangat mudah dimengerti, memotivasi, dan tidak mengintimidasi.
         
+        FAKTA YANG HARUS DIJELASKAN SECARA AKURAT (JANGAN UBAH ANGKA):
+        - Nama Usaha: {eval_res['profil']['nama_usaha']} ({eval_res['profil']['bentuk_usaha']})
+        - Izin Berusaha: Anda hanya perlu mengurus {eval_res['kbli']['izin']} (KBLI {eval_res['kbli']['kode']} - Risiko {eval_res['kbli']['risiko']}).
+        - Pajak: Omzet Rp {eval_res['tax']['omzet']:,}. Beban Pajak Anda adalah Rp {eval_res['tax']['pph_terutang']:,} per tahun. ({eval_res['tax']['status']}).
+        - Keamanan Pangan: Urus izin {eval_res['food_safety']['jenis']} di {eval_res['food_safety']['instansi']}.
+        - Sertifikasi Halal: Anda masuk jalur {eval_res['halal']['jalur']} ({eval_res['halal']['biaya']}).
+
+        Berikan "Rencana Aksi 3 Hari ke Depan" yang praktis agar mereka tahu apa yang harus dikerjakan besok pagi. Gunakan Markdown dan Emoji.
+        """
         try:
-            response = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, headers={"Content-Type": "application/json"}, timeout=15)
+            response = requests.post(url, json={"contents": [{"parts": [{"text": prompt}]}]}, headers={"Content-Type": "application/json"}, timeout=10)
             response.raise_for_status()
             return response.json()["candidates"][0]["content"]["parts"][0]["text"]
-        except Exception as e:
-            return f"> ⚠️ **Info:** Tidak dapat menghubungi API Gemini ({e}). Menggunakan *Local Pedagogical Engine*.\n\n" + EducationalScaffolder.get_local_scaffolding(eval_res)
+        except Exception:
+            return EducationalScaffolder.get_local_scaffolding(eval_res)
 
     @staticmethod
     def get_local_scaffolding(res: dict) -> str:
-        """Fallback Scaffolding dengan prinsip Education Informatics"""
         p, k, t, f, h = res['profil'], res['kbli'], res['tax'], res['food_safety'], res['halal']
         
         if t["pph_terutang"] == 0:
-            tax_text = f"Berdasarkan PP No. 20/2026, karena omzet Anda (Rp {t['omzet']:,}) di bawah batas Rp 500 juta, Anda mendapat subsidi **Bebas Pajak (Rp 0)**! Modal bisa diputar penuh untuk pengembangan."
+            tax_text = f"Kabar Gembira! Berdasarkan aturan terbaru, karena omzet Anda (Rp {t['omzet']:,}) di bawah batas Rp 500 juta, Anda berhak menikmati fasilitas **Bebas Pajak (Rp 0)**! Putar terus modal Anda untuk membesarkan bisnis."
         else:
-            tax_text = f"Hebat! Omzet Anda (Rp {t['omzet']:,}) sudah menembus batas Rp 500 juta. Anda hanya perlu membayar 0,5% dari selisihnya, yakni sebesar **Rp {t['pph_terutang']:,} / tahun**. Ini kontribusi hebat untuk negara!"
+            tax_text = f"Bisnis Anda berkembang luar biasa! Omzet Anda (Rp {t['omzet']:,}) telah menembus batas Rp 500 juta. Anda cukup membayar pajak 0,5% dari selisihnya, yakni **Rp {t['pph_terutang']:,} per tahun**. Kontribusi hebat untuk kemajuan bersama!"
 
         return f"""
-### 🎓 Panduan Kepatuhan & Akselerasi Bisnis Anda
+### 💡 Hasil Analisis & Panduan Legalitas Anda
 
-Halo Pengelola **{p['nama_usaha']}**! 🎉  
-Langkah Anda mencari tahu tentang legalitas menunjukkan kedewasaan berbisnis. Legalitas bukan sekadar "aturan yang memberatkan", melainkan **kunci pembuka akses permodalan, kemitraan, dan kepercayaan pelanggan.**
+Halo Kak Pengelola **{p['nama_usaha']}**! 
+Terima kasih sudah peduli dengan legalitas usaha. Mengurus perizinan itu tidak seseram yang dibayangkan kok! Justru ini adalah tiket emas untuk mendapat modal usaha (KUR), kemitraan, dan menumbuhkan rasa percaya dari pelanggan Anda.
 
-Dalam pendekatan *Education Informatics*, kami membagi langkah besar menjadi tahap-tahap kecil agar tidak membebani Anda:
+Berikut adalah ringkasan khusus untuk bisnis Anda:
 
-#### 📊 1. Ringkasan Posisi Usaha Anda
-*   **Identitas KBLI:** {k['kode']} ({k['risiko']}). Cukup gunakan **{k['izin']}**.
-*   **Insentif Pajak:** {tax_text}
-*   **Standar Pangan:** Anda wajib mengurus **{f['jenis']}** ({f['instansi']}).
-*   **Jaminan Halal:** Anda direkomendasikan masuk jalur **{h['jalur']}** ({h['biaya']}).
+#### 📊 1. Ringkasan Status Usaha
+*   **Izin Berusaha:** Bisnis Anda tergolong aman (Risiko {k['risiko']}). Anda cukup mengurus **{k['izin']}** secara online.
+*   **Perhitungan Pajak:** {tax_text}
+*   **Keamanan Pangan:** Jenis produk Anda mewajibkan Anda memiliki **{f['jenis']}** dari {f['instansi']}.
+*   **Sertifikat Halal:** Kabar baik, Anda bisa mendaftar melalui jalur **{h['jalur']}** ({h['biaya']}).
 
-#### 🚀 2. Rencana Aksi (Action Plan) Terpandu
-Mari selesaikan ini selangkah demi selangkah:
+#### 🚀 2. Rencana Aksi (Apa yang harus dilakukan besok?)
+Mari kita selesaikan perlahan agar tidak pusing:
 
-*   <span class="step-number">1</span> **Langkah Pertama (Hari Ini): Amankan NIB**  
-    Buka situs [oss.go.id](https://oss.go.id) menggunakan NIK Anda. NIB akan terbit dalam waktu kurang dari 30 menit. Ini adalah "KTP" bagi bisnis Anda.
-*   <span class="step-number">2</span> **Langkah Kedua: Standar Pangan**  
-    Pelajari syarat pengajuan {f['jenis']} di website Dinkes setempat. {f['info']}
-*   <span class="step-number">3</span> **Langkah Ketiga: Sertifikasi Halal**  
-    Kunjungi [ptsp.halal.go.id](https://ptsp.halal.go.id). Ajukan pendaftaran dengan jalur {h['jalur']}.
+*   <span class="step-number">1</span> **Langkah 1 (Selesaikan Hari Ini): Buat Akun OSS**  
+    Siapkan KTP, buka situs resmi **[oss.go.id](https://oss.go.id)**. Daftar akun baru, dan NIB Anda akan terbit gratis secara instan dalam 15 menit. NIB ini adalah "KTP" bagi usaha Anda.
+*   <span class="step-number">2</span> **Langkah 2: Urus Keamanan Pangan**  
+    Kunjungi kantor kecamatan / Puskesmas terdekat untuk mencari info pengurusan pendaftaran {f['jenis']}. {f['info']}
+*   <span class="step-number">3</span> **Langkah 3: Daftar Halal**  
+    Jika NIB sudah di tangan, buka **[ptsp.halal.go.id](https://ptsp.halal.go.id)**. Ajukan pendaftaran dengan jalur {h['jalur']} dan cari pendamping PPH terdekat di daerah Anda.
 """
 
 # ===========================================================================
-# 4. ANTARMUKA STREAMLIT (UI/UX MULTI-TAB)
+# 4. ANTARMUKA UTAMA APLIKASI (TANPA IDENTITAS PENELITI)
 # ===========================================================================
 
-# Sidebar: Metadata Riset & Pengaturan API
+# Sidebar disembunyikan secara default, hanya menyimpan opsi rahasia untuk admin/API
 with st.sidebar:
-    st.image("https://img.icons8.com/color/120/000000/graduation-cap.png", width=70)
-    st.markdown("### 🎓 UMKMGPT Research Lab")
-    st.caption("Neuro-Symbolic Legal AI untuk UMKM F&B")
-    
-    st.divider()
-    st.markdown("**Identitas Peneliti (Author):**")
-    st.write("👤 **Paulus Pensies Anggoro**")
-    st.caption("NIM: 2520101007 | Peminatan: Education Informatics (EI)")
-    st.write("👩‍🏫 **Dosen Pembimbing:**")
-    st.caption("Dr. Theresia Herlina, S.Kom., M.T")
-    st.caption("Magister Teknologi Informasi - Universitas Pradita")
-    
-    st.divider()
-    st.markdown("**⚙️ Engine Configuration:**")
+    st.image("https://img.icons8.com/color/120/000000/shop.png", width=70)
+    st.markdown("### UMKMGPT Admin Panel")
     api_key_input = st.text_input(
-        "Gemini API Key (Opsional):",
+        "Koneksi AI (Opsional):",
         type="password",
-        help="Masukkan API Key untuk mengaktifkan Neural Rephraser (Gemini 1.5 Pro/Flash). Jika kosong, menggunakan Local Pedagogical Engine bawaan sistem."
+        help="Kosongkan saja untuk pemakaian normal (Offline Mode). Khusus untuk admin jika ingin mengaktifkan Neural Engine via API."
     )
-    
-    st.info("💡 **Mode Aktif:**\n" + ("🟢 Online (Gemini API)" if api_key_input else "🔵 Offline (Local Engine)"))
 
-# Header Utama
+# Header Utama (Consumer-Facing)
 st.markdown("""
 <div class="main-header">
-    <h1>UMKMGPT: Asisten AI Kepatuhan Regulasi UMKM F&B</h1>
-    <p>Menggabungkan <b>Kepastian Hukum Deterministik</b> (Zero-Hallucination) dengan <b>Pendekatan Pedagogis</b> (Education Informatics) untuk memandu UMKM Indonesia mematuhi aturan perizinan, pajak, dan keamanan pangan.</p>
-    <span class="badge-research">Fokus Lokus: KBLI 56, KBLI 10799, PP 20/2026, Halal BPJPH</span>
+    <h1>UMKMGPT: Cek Izin & Pajak Kuliner 👩‍🍳</h1>
+    <p>Aplikasi gratis untuk membantu pemilik Warung, Cafe, dan Katering mengetahui persis Izin Usaha, Pajak, dan Jalur Halal apa yang cocok untuk bisnisnya dalam 1 menit.</p>
+    <span class="badge-consumer">Cepat • Akurat • Sesuai Aturan Pemerintah Terbaru</span>
 </div>
 """, unsafe_allow_html=True)
 
-# Tabs Navigasi
-tab1, tab2, tab3 = st.tabs([
-    "🧭 1. Diagnosis Kepatuhan (Core System)",
-    "🧮 2. Simulasi Visual Pajak PP 20/2026",
-    "📚 3. Arsitektur Metodologi (Neuro-Symbolic)"
+# Tabs Navigasi (Hanya fitur fungsional, hilangkan metodologi riset)
+tab1, tab2 = st.tabs([
+    "🧭 1. Cek Kebutuhan Izin Usaha Saya",
+    "🧮 2. Simulasi Bebas Pajak 500 Juta"
 ])
 
 # ── TAB 1: DIAGNOSIS KEPATUHAN USAHA ──────────────────────────────────────
@@ -278,34 +254,33 @@ with tab1:
     col_input, col_result = st.columns([1, 1.4], gap="large")
     
     with col_input:
-        st.subheader("📝 Input Profil Usaha")
-        st.caption("Isi form berikut untuk dievaluasi oleh Symbolic Rule Engine:")
+        st.subheader("📝 Masukkan Data Usaha Anda")
+        st.caption("Data ini tidak kami simpan, hanya untuk kalkulasi otomatis.")
         
         with st.form("form_compliance"):
-            nama_usaha = st.text_input("Nama Usaha Kuliner:", value="Dapur Oma Serpong")
-            bentuk_usaha = st.selectbox("Bentuk Legalitas:", ["Orang Pribadi (WPOP)", "Badan Usaha (CV/PT/Koperasi)"])
-            model_usaha = st.selectbox("Kategori Usaha Utama:", ["Kedai Minuman / Kopi", "Warung Makan / Resto", "Jasa Boga / Katering", "Produksi Makanan Kemasan"])
+            nama_usaha = st.text_input("Nama Usaha Kuliner Anda:", value="Dapur Bu Asih")
+            bentuk_usaha = st.selectbox("Bentuk Usaha:", ["Orang Pribadi (WPOP/Perorangan)", "Badan Usaha (CV/PT/Koperasi)"])
+            model_usaha = st.selectbox("Kategori Bisnis Utama:", ["Kedai Minuman / Kopi / Jus", "Warung Makan / Resto / Cafe", "Jasa Boga / Katering Porsi Besar", "Produksi Makanan Kemasan Awet"])
             
             omzet = st.number_input(
-                "Estimasi Omzet Kotor (Bruto) Tahunan (Rp):",
-                min_value=0, max_value=4_800_000_000, value=400_000_000, step=50_000_000, format="%d"
+                "Perkiraan Omzet (Pendapatan Kotor) dalam 1 Tahun (Rp):",
+                min_value=0, max_value=4_800_000_000, value=250_000_000, step=50_000_000, format="%d"
             )
             
-            kemasan = st.radio("Karakteristik Kemasan:", [
-                "Siap saji langsung konsumsi (tanpa kemasan awet)",
-                "Kemasan kering tahan >7 hari (kue, keripik, abon)",
-                "Olahan beku (frozen food) / pangan berisiko (susu cair)"
+            kemasan = st.radio("Jenis Makanan yang Dijual:", [
+                "Siap saji, dimakan hari itu juga (nasi bungkus, es teh, dll)",
+                "Kemasan kering tahan lebih dari 7 hari (kue kering, keripik, abon)",
+                "Olahan beku (frozen food) / daging kemasan / susu cair"
             ])
             
-            bahan = st.radio("Sumber Bahan Baku:", [
-                "100% Nabati / Bahan bersertifikat halal resmi",
-                "Menggunakan sembelihan hewan mandiri (tanpa sertifikat) / bahan kritis"
+            bahan = st.radio("Bahan Baku Utama:", [
+                "Bahan alami (sayur/buah) atau bahan kemasan yang sudah ada logo Halal",
+                "Saya menyembelih ayam/daging sendiri tanpa sertifikat potong hewan"
             ])
             
-            btn_diagnosa = st.form_submit_button("🔍 Analisis Kepatuhan Hukum", use_container_width=True)
+            btn_diagnosa = st.form_submit_button("🔍 Cek Sekarang", use_container_width=True)
 
     with col_result:
-        # Prepare Data & Run Symbolic Engine
         profil_data = {
             "nama_usaha": nama_usaha, "bentuk_usaha": bentuk_usaha, 
             "model_usaha": model_usaha, "omzet_tahunan": omzet, 
@@ -313,22 +288,22 @@ with tab1:
         }
         eval_result = SymbolicRuleEngine.evaluate(profil_data)
         
-        st.subheader("🎯 Hasil Ekstraksi Hukum (Deterministik)")
+        st.subheader("🎯 Ringkasan Status Bisnis Anda")
         
-        # Metric Cards
+        # Metric Cards (Ringkasan instan)
         mcol1, mcol2, mcol3 = st.columns(3)
         with mcol1:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Izin Berusaha</div><div class="metric-value" style="font-size:22px;">{eval_result["kbli"]["izin"].split(" ")[0]}</div><small>{eval_result["kbli"]["risiko"]}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Perizinan Dasar</div><div class="metric-value" style="font-size:20px;">{eval_result["kbli"]["izin"].split(" ")[0]}</div><small>{eval_result["kbli"]["risiko"]}</small></div>', unsafe_allow_html=True)
         with mcol2:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Beban PPh Final</div><div class="metric-value" style="font-size:22px;">Rp {eval_result["tax"]["pph_terutang"]:,}</div><small>{"Bebas Pajak" if eval_result["tax"]["pph_terutang"]==0 else "Kena Pajak 0.5%"}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Pajak Per Tahun</div><div class="metric-value" style="font-size:20px;">Rp {eval_result["tax"]["pph_terutang"]:,}</div><small>{"Bebas Pajak! 🎉" if eval_result["tax"]["pph_terutang"]==0 else "Tarif UMKM 0.5%"}</small></div>', unsafe_allow_html=True)
         with mcol3:
-            st.markdown(f'<div class="card-result"><div class="metric-label">Sertifikasi Halal</div><div class="metric-value" style="font-size:22px;">{eval_result["halal"]["jalur"].split(" ")[0]}</div><small>{eval_result["halal"]["biaya"]}</small></div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="card-result"><div class="metric-label">Status Halal</div><div class="metric-value" style="font-size:20px;">{eval_result["halal"]["jalur"].split(" ")[0]}</div><small>{eval_result["halal"]["biaya"]}</small></div>', unsafe_allow_html=True)
 
-        st.markdown("### 🎓 Interpretasi Pedagogis (Neural Rephraser)")
+        st.markdown("### 💬 Arahan Spesifik untuk Anda")
         with st.container():
             st.markdown('<div class="pedagogical-box">', unsafe_allow_html=True)
             if api_key_input:
-                with st.spinner("Memproses bahasa dengan Gemini AI..."):
+                with st.spinner("Sedang merumuskan saran terbaik untuk Anda..."):
                     ai_text = EducationalScaffolder.call_gemini_api(eval_result, api_key_input)
             else:
                 ai_text = EducationalScaffolder.get_local_scaffolding(eval_result)
@@ -336,28 +311,27 @@ with tab1:
             st.markdown(ai_text, unsafe_allow_html=True)
             st.markdown('</div>', unsafe_allow_html=True)
             
-            st.download_button("📥 Unduh Rencana Aksi (.md)", data=ai_text, file_name=f"Rencana_Aksi_{nama_usaha}.md", mime="text/markdown", use_container_width=True)
+            st.download_button("📥 Unduh Rencana Aksi Saya (.md)", data=ai_text, file_name=f"Panduan_Legalitas_{nama_usaha}.md", mime="text/markdown", use_container_width=True)
 
 # ── TAB 2: SIMULATOR PAJAK INTERAKTIF ─────────────────────────────────────
 with tab2:
-    st.subheader("🧮 Simulator Visual Pajak UMKM (PP No. 20/2026)")
-    st.caption("Visualisasi pembebasan pajak hingga omzet Rp 500 juta khusus untuk Wajib Pajak Orang Pribadi.")
+    st.subheader("🧮 Benarkah UMKM Bebas Pajak? Cek di sini!")
+    st.caption("Geser slider omzet di bawah ini untuk melihat apakah Anda wajib bayar pajak atau masuk kategori bebas pajak.")
     
     scol1, scol2 = st.columns([1, 2.5])
     
     with scol1:
-        st.markdown("#### Parameter Simulasi")
-        sim_bentuk = st.radio("Bentuk Entitas:", ["Orang Pribadi (WPOP)", "Badan Usaha (CV/PT)"], key="sim_bentuk")
-        sim_omzet = st.slider("Omzet Saat Ini:", 0, 1500, 600, 50, format="%d Juta") * 1_000_000
+        st.markdown("#### Kondisi Usaha Anda")
+        sim_bentuk = st.radio("Anda Mendaftar Sebagai:", ["Orang Pribadi (Perorangan)", "Badan Usaha (CV/PT)"], key="sim_bentuk")
+        sim_omzet = st.slider("Omzet (Pendapatan) Tahunan Anda:", 0, 1500, 300, 50, format="%d Juta") * 1_000_000
         
         sim_dpp = max(0, sim_omzet - 500_000_000) if "Orang Pribadi" in sim_bentuk else sim_omzet
         sim_pph = int(sim_dpp * 0.005)
         
-        st.markdown(f"**DPP:** Rp {sim_dpp:,.0f}")
-        st.markdown(f"<h3 style='color:var(--primary-color)'>Beban Pajak:<br/>Rp {sim_pph:,.0f}</h3>", unsafe_allow_html=True)
+        st.markdown(f"**Uang Kena Pajak:** Rp {sim_dpp:,.0f}")
+        st.markdown(f"<h3 style='color:var(--primary-color)'>Pajak yang Disetor:<br/>Rp {sim_pph:,.0f}</h3>", unsafe_allow_html=True)
 
     with scol2:
-        # Membuat Dataframe untuk Visualisasi
         omzet_range = list(range(0, 1500_000_000 + 1, 100_000_000))
         tax_data = []
         for o in omzet_range:
@@ -370,41 +344,12 @@ with tab2:
         df = pd.DataFrame(tax_data)
         df.set_index("OmzetTahunan", inplace=True)
         
-        st.markdown("#### Kurva Beban Pajak Terhadap Omzet")
+        st.markdown("#### Grafik Beban Pajak")
         st.line_chart(df, y="PajakTerutang", color="#B4690E")
         if "Orang Pribadi" in sim_bentuk:
-            st.info("💡 **Perhatikan Garis Datar di Awal:** Pada grafik di atas, beban pajak tetap Rp 0 hingga omzet mencapai Rp 500.000.000. Inilah bukti insentif fasilitas PTKP untuk UMKM Orang Pribadi.")
+            st.info("💡 **Penjelasan:** Lihat garis datar di awal grafik. Jika omzet Anda masih di bawah Rp 500.000.000, pajak Anda adalah 0 Rupiah! Pemerintah memberikan insentif ini khusus untuk pengusaha perorangan.")
         else:
-            st.warning("⚠️ **Garis Linear Sejak Awal:** Karena Anda memilih Badan Usaha, tidak ada fasilitas bebas pajak Rp 500 juta. Garis pajak langsung naik (0,5%) sejak omzet pertama.")
-
-# ── TAB 3: BASIS PENGETAHUAN SIMBOLIK ──────────────────────────────────────
-with tab3:
-    st.subheader("🏛️ Arsitektur Riset: Neuro-Symbolic AI")
-    st.caption("Penjelasan metodologi perancangan sistem bagi telaah akademis.")
-    
-    st.markdown("""
-    Aplikasi ini dibangun menggunakan arsitektur hybrid untuk mengatasi kelemahan LLM murni (halusinasi angka pajak/aturan hukum) dalam domain kritikal.
-    
-    ### 1. Symbolic Component (Pohon Keputusan Eksak)
-    Aturan hukum di-hardcode (dikodifikasi) menjadi logika *if-else* matematis.
-    *   **Perizinan:** KBLI 56 & 10799 (PP 28/2025)
-    *   **Perpajakan:** Threshold Rp 500 Juta PTKP WPOP (PP 20/2026)
-    *   **Halal:** Kriteria Bahan & Omzet Program SEHATI (Kepkaban BPJPH No.150/2022)
-    *   **Keamanan Pangan:** Perka BPOM No.22/2018 (SLHS vs P-IRT vs BPOM MD)
-    
-    ### 2. Neural Component (Pedagogical Rephraser)
-    Data deterministik (JSON) dikirim ke **Gemini 1.5 API** *bukan* untuk dihitung ulang, melainkan hanya untuk **diparafrase (rephrase)** menggunakan teori *Education Informatics* (Cognitive Load Theory & Scaffolding). Sistem menghasilkan panduan yang empatik, ramah, dan actionable.
-    """)
-    
-    with st.expander("Lihat Struktur Payload JSON Internal"):
-        st.json({
-            "project_metadata": {
-                "title": "Neuro-Symbolic AI Assistant for Regulatory Compliance",
-                "author": "Paulus Pensies Anggoro (2520101007)",
-                "specialization": "Education Informatics (EI)"
-            },
-            "status": "Ready for Sinta 2 / Scopus Q1 Submission"
-        })
+            st.warning("⚠️ **Penjelasan:** Untuk CV atau PT, garis pajak langsung naik sejak awal karena Badan Usaha wajib membayar 0,5% dari semua omzet tanpa potongan Rp 500 juta.")
 
 st.divider()
-st.caption("© 2026 | Magister Teknologi Informasi - Universitas Pradita | Proyek Riset Individu")
+st.caption("Powered by UMKMGPT — Solusi Pintar Legalitas Bisnis F&B Indonesia")
